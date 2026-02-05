@@ -19,9 +19,9 @@ async function checkHealth() {
         const response = await fetch(`${BACKEND_URL}/health`);
         const data = await response.json();
         
-        showResult(`✅ Backend está saudável! Status: ${data.status}`, 'success');
+        showResult(`Backend está saudável! Status: ${data.status}`, 'success');
     } catch (error) {
-        showResult(`❌ Erro ao conectar com backend: ${error.message}`, 'error');
+        showResult(`Erro ao conectar com backend: ${error.message}`, 'error');
     }
 }
 
