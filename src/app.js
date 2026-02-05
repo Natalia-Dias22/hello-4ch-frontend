@@ -1,5 +1,4 @@
-// URL do backend (você vai atualizar depois com a URL real!)
-const BACKEND_URL = 'https://hello-4ch-952043957190.us-east1.run.app/health';
+const BACKEND_URL = 'https://hello-4ch-952043957190.us-east1.run.app';
 
 function showResult(message, type = 'success') {
     const resultDiv = document.getElementById('result');
