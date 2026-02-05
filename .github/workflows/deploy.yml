@@ -1,0 +1,59 @@
+name: Deploy Frontend to Cloud Run
+
+on:
+  workflow_dispatch: 
+  push:
+    branches:
+      - "main"
+
+env:
+  IMAGE: hello-4ch-frontend
+  REGION: us-east1
+  PORT: 8080
+  MEMORY: 512Mi
+  TIMEOUT: 300
+  CPU: 1
+  MIN_INSTANCES: 0
+  MAX_INSTANCES: 10
+
+jobs:
+  build-push-deploy:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+      
+      - name: Authenticate with Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+      
+      - name: Set up Google Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+      
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker us-east1-docker.pkg.dev
+      
+      - name: Build Docker image
+        run: |
+          docker build -t "us-east1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/cloud-run-source-deploy/${{ env.IMAGE }}:latest" .
+      
+      - name: Push Docker image
+        run: |
+          docker push "us-east1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/cloud-run-source-deploy/${{ env.IMAGE }}:latest"
+      
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud run deploy ${{ env.IMAGE }} \
+            --image "us-east1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/cloud-run-source-deploy/${{ env.IMAGE }}:latest" \
+            --region ${{ env.REGION }} \
+            --platform managed \
+            --allow-unauthenticated \
+            --memory ${{ env.MEMORY }} \
+            --cpu ${{ env.CPU }} \
+            --port ${{ env.PORT }} \
+            --timeout ${{ env.TIMEOUT }} \
+            --min-instances ${{ env.MIN_INSTANCES }} \
+            --max-instances ${{ env.MAX_INSTANCES }} \
+            --project ${{ secrets.GCP_PROJECT_ID }}

@@ -1,0 +1,32 @@
+notepad .gitignore
+```
+
+**Cole:**
+```
+# Node modules (se adicionar depois)
+node_modules/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+```
+
+**Salve (Ctrl+S)**
+
+---
+
+## ✅ **Estrutura atualizada:**
+```
+hello-4ch-frontend/
+├── .gitignore   ✅
+├── Dockerfile   ✅
+├── index.html   ✅
+├── style.css    ✅
+└── app.js       ✅
